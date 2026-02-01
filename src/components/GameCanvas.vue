@@ -301,18 +301,16 @@ const endGame = async () => {
 }
 
 const setupControls = () => {
-  if (!audioInput.isMicrophoneSupported.value) {
-    const fallbackCleanup = audioInput.setupFallbackControls(
-      { mode: 'tap', pulseMs: 160 },
-      (isActive) => {
+  const fallbackCleanup = audioInput.setupFallbackControls(
+    { mode: 'tap', pulseMs: 160, requireVoiceInactive: true },
+    (isActive) => {
+      if (isActive) {
         inputMode.value = 'click'
-      },
-      canvas.value
-    )
-    return fallbackCleanup
-  }
-  
-  return () => {}
+      }
+    },
+    canvas.value
+  )
+  return fallbackCleanup
 }
 
 onMounted(async () => {
