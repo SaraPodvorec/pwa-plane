@@ -69,6 +69,9 @@ const testNotification = async () => {
       badge: '/assets/Fly (1).png',
       tag: 'test-notification'
     })
+
+    console.log('Notification message sent to service worker')
+    alert('Test notification sent!')
     
   } catch (error) {
     console.error('Test notification failed:', error)

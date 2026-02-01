@@ -302,17 +302,20 @@ const endGame = async () => {
 }
 
 const setupControls = () => {
-  const fallbackCleanup = audioInput.setupFallbackControls(
-    { mode: audioInput.isMicrophoneSupported.value ? 'hold' : 'tap', pulseMs: 160 },
-    (isActive) => {
-      if (isActive && !audioInput.isMicrophoneSupported.value) {
-        inputMode.value = 'click'
-      }
-    },
-    canvas.value
-  )
 
-  return fallbackCleanup
+  if (!audioInput.isMicrophoneSupported.value) {
+    const fallbackCleanup = audioInput.setupFallbackControls(
+      { mode: 'tap', pulseMs: 160 },
+      (isActive) => {
+        inputMode.value = 'click'
+      },
+      canvas.value
+    )
+    return fallbackCleanup
+  }
+  
+
+  return () => {}
 }
 
 onMounted(async () => {
@@ -340,6 +343,7 @@ onMounted(async () => {
   await loadImages()
   await audioInput.initMicrophone()
   inputMode.value = audioInput.isMicrophoneSupported.value ? 'voice' : 'click'
+  console.log('Microphone supported:', audioInput.isMicrophoneSupported.value, 'Input mode:', inputMode.value)
   const cleanupControls = setupControls()
   controlsCleanup = cleanupControls
   await gameStore.loadHighScores()
