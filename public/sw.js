@@ -216,8 +216,11 @@ self.addEventListener('notificationclick', (event) => {
 
 
 self.addEventListener('message', (event) => {
+  console.log('Service worker received message:', event.data)
   if (!event.data) return
+  
   if (event.data.type === 'SHOW_NOTIFICATION') {
+    console.log('Showing notification:', event.data.title)
     const { title, body, icon, badge, tag } = event.data
     self.registration.showNotification(title, {
       body,
@@ -225,6 +228,10 @@ self.addEventListener('message', (event) => {
       badge,
       tag,
       requireInteraction: false
+    }).then(() => {
+      console.log('Notification displayed successfully')
+    }).catch((error) => {
+      console.error('Failed to show notification:', error)
     })
   }
   if (event.data.type === 'SYNC_NOW') {
