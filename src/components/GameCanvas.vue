@@ -305,7 +305,7 @@ const setupControls = () => {
   const fallbackCleanup = audioInput.setupFallbackControls(
     { mode: audioInput.isMicrophoneSupported.value ? 'hold' : 'tap', pulseMs: 160 },
     (isActive) => {
-      if (isActive) {
+      if (isActive && !audioInput.isMicrophoneSupported.value) {
         inputMode.value = 'click'
       }
     },
