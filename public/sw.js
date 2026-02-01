@@ -8,8 +8,8 @@ const urlsToCache = [
     "/assets/Dead (1).png",
 ];
 
-const CACHE_NAME = "pwa-plane-cache-v4";
-const RUNTIME_CACHE = "pwa-plane-runtime-v4";
+const CACHE_NAME = "pwa-plane-cache-v6";
+const RUNTIME_CACHE = "pwa-plane-runtime-v6";
 
 self.addEventListener("install", (event) => {
     event.waitUntil(
@@ -17,6 +17,7 @@ self.addEventListener("install", (event) => {
             return cache.addAll(urlsToCache);
         })
     );
+    self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -64,7 +65,7 @@ const cacheFirstStrategy = async (request) => {
   try {
     const response = await fetch(request)
     if (response && response.ok) {
-      const cache = await caches.open(RUNTIME_CACHE)
+      const cache = await caches.open(CACHE_NAME)
       try {
         await cache.put(request, response.clone())
       } catch (cacheError) {
@@ -72,9 +73,9 @@ const cacheFirstStrategy = async (request) => {
     }
     return response
   } catch (error) {
-    return new Response('Offline - image not available', {
-      status: 503,
-      statusText: 'Service Unavailable'
+    return new Response(null, {
+      status: 200,
+      statusText: 'OK'
     })
   }
 }
