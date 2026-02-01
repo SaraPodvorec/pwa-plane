@@ -92,12 +92,14 @@ export const useAudioInput = () => {
     const target = targetElement || document
 
     const setActive = (active) => {
-      if (active && options.requireVoiceInactive && isMicrophoneSupported.value && isListening.value) {
+      if (active && options.requireVoiceInactive && isVoiceActive.value) {
         return
       }
       
       isActive = active
-      isVoiceActive.value = active
+      if (!options.requireVoiceInactive) {
+        isVoiceActive.value = active
+      }
       audioLevel.value = active ? 100 : 0
       callback(active)
     }
