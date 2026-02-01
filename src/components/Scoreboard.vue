@@ -94,13 +94,68 @@ const formatTime = (seconds) => {
 
 @media (max-width: 640px) {
   .scoreboard {
-    padding: 1.5rem;
-    max-height: 100%;
+    padding: 1.2rem;
+    gap: 1rem;
   }
+
+  .scoreboard h2 {
+    font-size: 1.5rem;
+  }
+
+  .score-item {
+    grid-template-columns: 2.5rem 1fr;
+    gap: 0.8rem;
+    padding: 0.8rem;
+  }
+
+  .rank {
+    font-size: 1rem;
+  }
+
+  .time {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .scoreboard {
+    padding: 1rem;
+    gap: 0.8rem;
+  }
+
+  .scoreboard h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .scores-list {
+    gap: 0.5rem;
+  }
+
+  .score-item {
+    grid-template-columns: 2rem 1fr;
+    gap: 0.5rem;
+    padding: 0.6rem;
+    border-radius: 6px;
+  }
+
+  .rank {
+    font-size: 0.9rem;
+  }
+
+  .time {
+    font-size: 0.9rem;
+  }
+
+  .empty {
+    padding: 1rem;
+    font-size: 0.9rem;
+  }
+}
 
   .score-item {
     grid-template-columns: 2.5rem 1fr;
     gap: 0.75rem;
   }
-}
+
 </style>

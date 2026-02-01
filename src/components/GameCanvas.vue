@@ -170,11 +170,7 @@ const gameLoop = () => {
 
 
   voiceStrengthPercent.value = Math.round((audioInput.audioLevel.value / 255) * 100)
-  if (voiceStrengthPercent.value > 0 || audioInput.isVoiceActive.value) {
-    console.log('Voice detected - isVoiceActive:', audioInput.isVoiceActive.value, 'audioLevel:', audioInput.audioLevel.value)
-  }
   if (hasReceivedVoice.value && !audioInput.isVoiceActive.value) {
-    console.log('Voice ended, ending game')
     endGame()
     return
   }
@@ -305,13 +301,10 @@ const endGame = async () => {
 }
 
 const setupControls = () => {
-  console.log('setupControls called, isMicrophoneSupported:', audioInput.isMicrophoneSupported.value)
   if (!audioInput.isMicrophoneSupported.value) {
-    console.log('Setting up fallback controls (no microphone)')
     const fallbackCleanup = audioInput.setupFallbackControls(
       { mode: 'tap', pulseMs: 160 },
       (isActive) => {
-        console.log('Fallback control triggered, isActive:', isActive)
         inputMode.value = 'click'
       },
       canvas.value
@@ -319,7 +312,6 @@ const setupControls = () => {
     return fallbackCleanup
   }
   
-  console.log('Microphone supported, NOT setting up fallback controls')
   return () => {}
 }
 
@@ -345,36 +337,9 @@ onMounted(async () => {
     window.removeEventListener('resize', resizeCanvas)
   }
 
-  // Add mouse listener to detect clicks
-  const onCanvasClick = (e) => {
-    console.log('CANVAS CLICK DETECTED:', e.type)
-  }
-  canvasEl.addEventListener('mousedown', onCanvasClick)
-  canvasEl.addEventListener('mouseup', onCanvasClick)
-  canvasEl.addEventListener('click', onCanvasClick)
-  
-  // Also track document level
-  const onDocClick = (e) => {
-    console.log('DOCUMENT CLICK DETECTED:', e.type, 'target:', e.target === canvasEl ? 'canvas' : 'other')
-  }
-  document.addEventListener('mousedown', onDocClick)
-  document.addEventListener('mouseup', onDocClick)
-  
-  const originalCleanup = resizeCleanup
-  resizeCleanup = () => {
-    originalCleanup()
-    canvasEl.removeEventListener('mousedown', onCanvasClick)
-    canvasEl.removeEventListener('mouseup', onCanvasClick)
-    canvasEl.removeEventListener('click', onCanvasClick)
-    document.removeEventListener('mousedown', onDocClick)
-    document.removeEventListener('mouseup', onDocClick)
-  }
-
-  console.log('About to initialize microphone...')
   await loadImages()
   await audioInput.initMicrophone()
   inputMode.value = audioInput.isMicrophoneSupported.value ? 'voice' : 'click'
-  console.log('About to setup controls...')
   const cleanupControls = setupControls()
   controlsCleanup = cleanupControls
   await gameStore.loadHighScores()
@@ -527,12 +492,108 @@ onMounted(async () => {
 @media (max-width: 640px) {
   .start,
   .game-over {
-    padding: 1.5rem;
+    padding: 1.2rem;
     width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
   }
 
-  .start h2 {
+  .start h2,
+  .game-over h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .start p {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .instruction {
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+  }
+
+  .score {
+    margin: 1rem 0;
+  }
+
+  .label {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .value {
+    font-size: 2rem;
+  }
+
+  .btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .countdown {
+    top: 25%;
+  }
+
+  .number {
+    font-size: 3.5rem;
+  }
+
+  .text {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .start,
+  .game-over {
+    padding: 1rem;
+    width: 95%;
+  }
+
+  .start h2,
+  .game-over h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .start p {
+    font-size: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .instruction {
+    font-size: 0.75rem;
+  }
+
+  .score {
+    margin: 0.8rem 0;
+  }
+
+  .label {
+    font-size: 1rem;
+  }
+
+  .value {
     font-size: 1.5rem;
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .actions {
+    gap: 0.5rem;
+  }
+
+  .number {
+    font-size: 2.5rem;
+  }
+
+  .text {
+    font-size: 1rem;
   }
 }
 </style>

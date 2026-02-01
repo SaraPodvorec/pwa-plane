@@ -158,22 +158,52 @@ const testNotification = async () => {
 }
 
 @media (max-width: 640px) {
+  .layout {
+    padding: 0.5rem;
+    top: 50vh;
+  }
+
   .header {
     flex-direction: column;
     align-items: stretch;
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .time {
+    font-size: 1.3rem;
+    text-align: center;
   }
 
   .actions {
     flex-direction: column;
-  }
-
-  .time {
-    font-size: 1.5rem;
-    text-align: center;
+    gap: 0.5rem;
   }
 
   .btn {
     width: 100%;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .layout {
+    padding: 0.25rem;
+  }
+
+  .header {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .time {
+    font-size: 1.1rem;
+  }
+
+  .btn {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.75rem;
   }
 }
 </style>
