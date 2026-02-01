@@ -345,9 +345,36 @@ onMounted(async () => {
     window.removeEventListener('resize', resizeCanvas)
   }
 
+  // Add mouse listener to detect clicks
+  const onCanvasClick = (e) => {
+    console.log('CANVAS CLICK DETECTED:', e.type)
+  }
+  canvasEl.addEventListener('mousedown', onCanvasClick)
+  canvasEl.addEventListener('mouseup', onCanvasClick)
+  canvasEl.addEventListener('click', onCanvasClick)
+  
+  // Also track document level
+  const onDocClick = (e) => {
+    console.log('DOCUMENT CLICK DETECTED:', e.type, 'target:', e.target === canvasEl ? 'canvas' : 'other')
+  }
+  document.addEventListener('mousedown', onDocClick)
+  document.addEventListener('mouseup', onDocClick)
+  
+  const originalCleanup = resizeCleanup
+  resizeCleanup = () => {
+    originalCleanup()
+    canvasEl.removeEventListener('mousedown', onCanvasClick)
+    canvasEl.removeEventListener('mouseup', onCanvasClick)
+    canvasEl.removeEventListener('click', onCanvasClick)
+    document.removeEventListener('mousedown', onDocClick)
+    document.removeEventListener('mouseup', onDocClick)
+  }
+
+  console.log('About to initialize microphone...')
   await loadImages()
   await audioInput.initMicrophone()
   inputMode.value = audioInput.isMicrophoneSupported.value ? 'voice' : 'click'
+  console.log('About to setup controls...')
   const cleanupControls = setupControls()
   controlsCleanup = cleanupControls
   await gameStore.loadHighScores()
