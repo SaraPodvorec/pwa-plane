@@ -86,37 +86,10 @@ const formatTime = (seconds) => {
   text-shadow: 2px 2px 8px rgba(31, 31, 31, 0.5);
 }
 
-.date {
-  font-size: 0.85rem;
-  color: #d1d5db;
-  text-align: right;
-}
-
 .empty {
   text-align: center;
   padding: 2rem;
   color: #d1d5db;
-}
-
-.btn {
-  padding: 0.8rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border: 2px solid white;
-}
-
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
 }
 
 @media (max-width: 640px) {
@@ -128,10 +101,6 @@ const formatTime = (seconds) => {
   .score-item {
     grid-template-columns: 2.5rem 1fr;
     gap: 0.75rem;
-  }
-
-  .date {
-    display: none;
   }
 }
 </style>

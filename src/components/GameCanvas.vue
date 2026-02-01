@@ -380,23 +380,6 @@ onMounted(async () => {
   box-sizing: border-box;
 }
 
-
-.voice-indicator {
-  font-size: 1.5rem;
-  padding: 0.5rem 1rem;
-  background: rgba(239, 68, 68, 0.7);
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  flex: 0 0 auto;
-}
-
-.voice-indicator.active {
-  background: rgba(34, 197, 94, 0.7);
-  transform: scale(1.1);
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
-}
-
 .start,
 .game-over {
   position: absolute;
@@ -456,13 +439,6 @@ onMounted(async () => {
   font-weight: bold;
   color: #ffffff;
   text-shadow: 2px 2px 8px rgba(31, 31, 31, 0.5);
-}
-
-.restart-hint {
-  font-size: 1.1rem;
-  color: #22c55e;
-  margin-top: 1rem;
-  animation: pulse 2s infinite;
 }
 
 .btn {
