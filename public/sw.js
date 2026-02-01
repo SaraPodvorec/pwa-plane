@@ -8,8 +8,8 @@ const urlsToCache = [
     "/assets/Dead (1).png",
 ];
 
-const CACHE_NAME = "pwa-plane-cache-v2";
-const RUNTIME_CACHE = "pwa-plane-runtime-v2";
+const CACHE_NAME = "pwa-plane-cache-v3";
+const RUNTIME_CACHE = "pwa-plane-runtime-v3";
 
 self.addEventListener("install", (event) => {
     event.waitUntil(
