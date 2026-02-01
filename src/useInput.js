@@ -79,7 +79,7 @@ export const useAudioInput = () => {
 
 
   const setupFallbackControls = (optionsOrCallback, maybeCallback, targetElement = null) => {
-    const defaultOptions = { mode: 'hold', pulseMs: 160, requireVoiceInactive: false }
+    const defaultOptions = { mode: 'hold', pulseMs: 160 }
     const options =
       typeof optionsOrCallback === 'function'
         ? defaultOptions
@@ -92,14 +92,8 @@ export const useAudioInput = () => {
     const target = targetElement || document
 
     const setActive = (active) => {
-      if (active && options.requireVoiceInactive && isVoiceActive.value) {
-        return
-      }
-      
       isActive = active
-      if (!options.requireVoiceInactive) {
-        isVoiceActive.value = active
-      }
+      isVoiceActive.value = active
       audioLevel.value = active ? 100 : 0
       callback(active)
     }
