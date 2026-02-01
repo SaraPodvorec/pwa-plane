@@ -113,7 +113,6 @@ const loadImages = async () => {
         }
       }
       img.onerror = () => {
-        console.log(`Failed to load ${src}`)
         loaded++
         if (loaded === imageSrcs.length) {
           resolve(null)
@@ -302,7 +301,6 @@ const endGame = async () => {
 }
 
 const setupControls = () => {
-
   if (!audioInput.isMicrophoneSupported.value) {
     const fallbackCleanup = audioInput.setupFallbackControls(
       { mode: 'tap', pulseMs: 160 },
@@ -314,7 +312,6 @@ const setupControls = () => {
     return fallbackCleanup
   }
   
-
   return () => {}
 }
 
@@ -343,7 +340,6 @@ onMounted(async () => {
   await loadImages()
   await audioInput.initMicrophone()
   inputMode.value = audioInput.isMicrophoneSupported.value ? 'voice' : 'click'
-  console.log('Microphone supported:', audioInput.isMicrophoneSupported.value, 'Input mode:', inputMode.value)
   const cleanupControls = setupControls()
   controlsCleanup = cleanupControls
   await gameStore.loadHighScores()

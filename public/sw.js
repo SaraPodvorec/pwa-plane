@@ -11,8 +11,6 @@ const urlsToCache = [
 const CACHE_NAME = "pwa-plane-cache-v3";
 const RUNTIME_CACHE = "pwa-plane-runtime-v3";
 
-console.log('Service worker script loaded')
-
 self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
@@ -94,9 +92,7 @@ const syncHighScores = async () => {
       return
     }
 
-    console.log('Syncing scores:', scores)
     const isNewHighScore = await checkNewHighScore(scores)
-    console.log('Is new high score?', isNewHighScore)
 
     const clients = await self.clients.matchAll()
     clients.forEach((client) => {
@@ -129,7 +125,6 @@ const syncHighScores = async () => {
     }
 
   } catch (error) {
-    console.error('Sync failed:', error)
     throw error
   }
 }
@@ -140,21 +135,15 @@ const getAllScoresFromFirestore = async () => {
     const collectionName = 'highScores'
     const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/${collectionName}`
     
-    console.log('Fetching scores from Firestore:', url)
     const response = await fetch(url)
-    console.log('Firestore response status:', response.status)
     
     if (!response.ok) {
-      const errorText = await response.text()
-      console.error('Firestore error response:', errorText)
       throw new Error(`Failed to fetch scores from Firestore: ${response.status}`)
     }
     
     const data = await response.json()
-    console.log('Firestore data:', data)
     
     if (!data.documents) {
-      console.log('No documents in Firestore')
       return []
     }
     
@@ -164,10 +153,8 @@ const getAllScoresFromFirestore = async () => {
       date: doc.fields.date?.stringValue || ''
     })).sort((a, b) => b.time - a.time)
     
-    console.log('Parsed scores from Firestore:', scores)
     return scores
   } catch (error) {
-    console.error('Error fetching from Firestore:', error)
     return []
   }
 }
@@ -198,8 +185,6 @@ const checkNewHighScore = async (scores) => {
   
   if (!isRecent) return false
   
-  console.log('Most recent score:', mostRecent, 'Highest score:', sortedScores[0])
-  
   return mostRecent.time === sortedScores[0].time
 }
 
@@ -217,11 +202,9 @@ self.addEventListener('notificationclick', (event) => {
 
 
 self.addEventListener('message', (event) => {
-  console.log('Service worker received message:', event.data)
   if (!event.data) return
   
   if (event.data.type === 'SHOW_NOTIFICATION') {
-    console.log('Showing notification:', event.data.title)
     const { title, body, icon, badge, tag } = event.data
     self.registration.showNotification(title, {
       body,
@@ -229,14 +212,9 @@ self.addEventListener('message', (event) => {
       badge,
       tag,
       requireInteraction: false
-    }).then(() => {
-      console.log('Notification displayed successfully')
-    }).catch((error) => {
-      console.error('Failed to show notification:', error)
     })
   }
   if (event.data.type === 'SYNC_NOW') {
-    console.log('SYNC_NOW message received')
     event.waitUntil(syncHighScores())
   }
 })

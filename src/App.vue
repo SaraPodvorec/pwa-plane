@@ -39,35 +39,23 @@ const formatTime = (seconds) => {
 }
 
 const testNotification = async () => {
-  console.log('Test notification clicked')
-  
   try {
-    console.log('Notification permission:', Notification.permission)
-
     // Request permission if needed
     if (Notification.permission === 'default') {
-      console.log('Requesting notification permission...')
       const permission = await Notification.requestPermission()
-      console.log('Permission result:', permission)
       if (permission !== 'granted') {
-        console.warn('Notification permission denied')
         return
       }
     } else if (Notification.permission === 'denied') {
-      console.warn('Notification permission is blocked')
       return
     }
 
-    console.log('Permission granted, sending to service worker...')
     const registration = await navigator.serviceWorker.ready
-    console.log('Service worker ready:', registration)
     
     if (!registration.active) {
-      console.warn('Service worker not active')
       return
     }
 
-    console.log('Service worker active, posting message...')
     registration.active.postMessage({
       type: 'SHOW_NOTIFICATION',
       title: 'Plane Game - Test Notification',
@@ -76,11 +64,8 @@ const testNotification = async () => {
       badge: '/assets/Fly (1).png',
       tag: 'test-notification'
     })
-
-    console.log('Notification message sent to service worker')
     
   } catch (error) {
-    console.error('Test notification failed:', error)
   }
 }
 </script>

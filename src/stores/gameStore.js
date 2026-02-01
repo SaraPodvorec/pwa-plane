@@ -38,7 +38,6 @@ export const useGameStore = defineStore('game', () => {
       
       highScores.value = uniqueScores
     } catch (error) {
-      console.log('Error loading high scores:', error)
     }
   }
 
@@ -53,7 +52,6 @@ export const useGameStore = defineStore('game', () => {
       await loadHighScores()
       return { id: docRef.id, ...score }
     } catch (error) {
-      console.log('Error saving score:', error)
     }
   }
 
@@ -66,7 +64,6 @@ export const useGameStore = defineStore('game', () => {
         ...doc.data()
       }))
     } catch (error) {
-      console.log('Error getting all scores:', error)
       return []
     }
   }
@@ -93,32 +90,23 @@ export const useGameStore = defineStore('game', () => {
     
     if (currentTime.value > 0) {
       const score = await saveScore(currentTime.value)
-      console.log('Score saved:', score)
-      
       
       if ('serviceWorker' in navigator && 'SyncManager' in window) {
         try {
           const registration = await navigator.serviceWorker.ready
           await registration.sync.register('sync-high-scores')
-          console.log('Background sync registered successfully')
           if (registration.active) {
             registration.active.postMessage({ type: 'SYNC_NOW' })
-            console.log('Requested immediate sync')
           }
         } catch (error) {
-          console.warn('Background sync not available:', error)
-          
           try {
             const registration = await navigator.serviceWorker.ready
             if (registration.active) {
               registration.active.postMessage({ type: 'SYNC_NOW' })
             }
           } catch (e) {
-            console.error('Failed to send SYNC_NOW message:', e)
           }
         }
-      } else {
-        console.warn('SyncManager not supported')
       }
       
       return score
