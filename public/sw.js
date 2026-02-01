@@ -94,11 +94,8 @@ const syncHighScores = async () => {
     }
 
     console.log('Syncing scores:', scores)
-
-
     const isNewHighScore = await checkNewHighScore(scores)
     console.log('Is new high score?', isNewHighScore)
-    
 
     const clients = await self.clients.matchAll()
     clients.forEach((client) => {
