@@ -3,7 +3,7 @@ import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager
 import { setLogLevel } from "firebase/app"
 
 
-setLogLevel('error')
+setLogLevel('silent')
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
