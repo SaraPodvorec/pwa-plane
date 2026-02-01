@@ -45,23 +45,8 @@ const testNotification = async () => {
       return
     }
 
-    if (!('Notification' in window)) {
-      console.warn('Notifications not supported')
-      return
-    }
-
-
-    if (Notification.permission === 'default') {
-      const permission = await Notification.requestPermission()
-      if (permission !== 'granted') {
-        console.warn('Notification permission denied')
-        return
-      }
-    }
-
-    if (Notification.permission !== 'granted') {
-      console.warn('Notification permission not granted')
-      return
+    if ('Notification' in window && Notification.permission !== 'granted') {
+      await Notification.requestPermission()
     }
 
     const registration = await navigator.serviceWorker.ready
@@ -71,11 +56,9 @@ const testNotification = async () => {
         title: 'Plane Game - Test Notification',
         body: 'Notifications are working!',
         icon: '/assets/Fly (1).png',
-        badge: '/assets/Fly (1).png',
+        badge:'/assets/Fly (1).png',
         tag: 'test-notification'
       })
-    } else {
-      console.warn('Service worker not active')
     }
   } catch (error) {
     console.error('Test notification failed:', error)
@@ -109,7 +92,6 @@ const testNotification = async () => {
   position: relative;
   top: 50vh;
   transform: translateY(-50%);
-  height: 100vh;
 }
 
 .header {
