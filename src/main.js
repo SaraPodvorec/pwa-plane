@@ -3,7 +3,17 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import { registerServiceWorker } from './services/serviceWorkerManager.js'
 
-//zbog firestore db
+
+const originalFetch = window.fetch
+window.fetch = function(...args) {
+  const url = args[0]?.toString() || ''
+  if (!navigator.onLine && url.includes('firestore.googleapis.com')) {
+    return Promise.reject(new Error('Offline'))
+  }
+  return originalFetch.apply(this, args)
+}
+
+
 const originalError = console.error
 const originalWarn = console.warn
 
@@ -30,13 +40,14 @@ console.warn = (...args) => {
   originalWarn.apply(console, args)
 }
 
-// Suppress unhandled promise rejections from network errors
+
 window.addEventListener('unhandledrejection', (event) => {
   const message = event.reason?.message || event.reason?.toString() || ''
   if (message.includes('Failed to fetch') || 
       message.includes('NetworkError') ||
       message.includes('network') ||
-      message.includes('offline')) {
+      message.includes('offline') ||
+      message.includes('Offline')) {
     event.preventDefault()
   }
 })

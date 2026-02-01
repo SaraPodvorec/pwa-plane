@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app"
-import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, disableNetwork } from "firebase/firestore"
+import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, disableNetwork, enableNetwork } from "firebase/firestore"
 import { setLogLevel } from "firebase/app"
 
 
@@ -23,10 +23,14 @@ export const db = initializeFirestore(app, {
 })
 
 
+if (!navigator.onLine) {
+  disableNetwork(db).catch(() => {})
+}
+
 window.addEventListener('offline', () => {
   disableNetwork(db).catch(() => {})
 })
 
 window.addEventListener('online', () => {
-
+  enableNetwork(db).catch(() => {})
 })
