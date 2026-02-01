@@ -78,7 +78,7 @@ export const useAudioInput = () => {
   }
 
 
-  const setupFallbackControls = (optionsOrCallback, maybeCallback) => {
+  const setupFallbackControls = (optionsOrCallback, maybeCallback, targetElement = null) => {
     const defaultOptions = { mode: 'hold', pulseMs: 160 }
     const options =
       typeof optionsOrCallback === 'function'
@@ -89,6 +89,7 @@ export const useAudioInput = () => {
 
     let isActive = false
     let pulseTimer = null
+    const target = targetElement || document
 
     const setActive = (active) => {
       isActive = active
@@ -135,16 +136,16 @@ export const useAudioInput = () => {
     }
 
 
-    document.addEventListener('mousedown', onMouseDown)
-    document.addEventListener('mouseup', onMouseUp)
-    document.addEventListener('touchstart', onTouchStart)
-    document.addEventListener('touchend', onTouchEnd)
+    target.addEventListener('mousedown', onMouseDown)
+    target.addEventListener('mouseup', onMouseUp)
+    target.addEventListener('touchstart', onTouchStart)
+    target.addEventListener('touchend', onTouchEnd)
 
     return () => {
-      document.removeEventListener('mousedown', onMouseDown)
-      document.removeEventListener('mouseup', onMouseUp)
-      document.removeEventListener('touchstart', onTouchStart)
-      document.removeEventListener('touchend', onTouchEnd)
+      target.removeEventListener('mousedown', onMouseDown)
+      target.removeEventListener('mouseup', onMouseUp)
+      target.removeEventListener('touchstart', onTouchStart)
+      target.removeEventListener('touchend', onTouchEnd)
       if (pulseTimer) {
         clearTimeout(pulseTimer)
         pulseTimer = null

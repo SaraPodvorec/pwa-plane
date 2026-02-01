@@ -308,7 +308,8 @@ const setupControls = () => {
       if (isActive) {
         inputMode.value = 'click'
       }
-    }
+    },
+    canvas.value
   )
 
   return fallbackCleanup
