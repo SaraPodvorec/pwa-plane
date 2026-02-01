@@ -11,6 +11,8 @@ const urlsToCache = [
 const CACHE_NAME = "pwa-plane-cache-v3";
 const RUNTIME_CACHE = "pwa-plane-runtime-v3";
 
+console.log('Service worker script loaded')
+
 self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
