@@ -40,28 +40,39 @@ const formatTime = (seconds) => {
 
 const testNotification = async () => {
   try {
-    if (!('serviceWorker' in navigator)) {
-      console.warn('Service worker not supported')
+
+    if (Notification.permission === 'default') {
+      const permission = await Notification.requestPermission()
+      if (permission !== 'granted') {
+        alert('Notification permission denied')
+        return
+      }
+    } else if (Notification.permission === 'denied') {
+      alert('Notification permission is blocked. Change it in browser settings.')
       return
     }
 
-    if ('Notification' in window && Notification.permission !== 'granted') {
-      await Notification.requestPermission()
+    const registration = await navigator.serviceWorker.ready
+    
+    if (!registration.active) {
+      alert('Service worker not active. Reloading page...')
+      window.location.reload()
+      return
     }
 
-    const registration = await navigator.serviceWorker.ready
-    if (registration.active) {
-      registration.active.postMessage({
-        type: 'SHOW_NOTIFICATION',
-        title: 'Plane Game - Test Notification',
-        body: 'Notifications are working!',
-        icon: '/assets/Fly (1).png',
-        badge:'/assets/Fly (1).png',
-        tag: 'test-notification'
-      })
-    }
+
+    registration.active.postMessage({
+      type: 'SHOW_NOTIFICATION',
+      title: 'Plane Game - Test Notification',
+      body: 'Notifications are working!',
+      icon: '/assets/Fly (1).png',
+      badge: '/assets/Fly (1).png',
+      tag: 'test-notification'
+    })
+    
   } catch (error) {
     console.error('Test notification failed:', error)
+    alert(`Error: ${error.message}`)
   }
 }
 </script>
