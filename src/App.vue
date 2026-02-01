@@ -6,10 +6,10 @@
         {{ formatTime(gameStore.currentTime) }}
       </div>
       <div class="actions">
-        <button @click="showHighScores = !showHighScores" class="btn btn-secondary">
+        <button @click.stop="showHighScores = !showHighScores" class="btn btn-secondary">
           {{ showHighScores ? 'Back' : 'High Scores' }}
         </button>
-        <button @click="testNotification" class="btn btn-secondary">
+        <button @click.stop="testNotification" class="btn btn-secondary">
           Test Notification
         </button>
       </div>
