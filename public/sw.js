@@ -2,7 +2,6 @@ const urlsToCache = [
     "/",
     "/manifest.json",
     "/index.html",
-    "/assets/vite.svg",
     "/assets/BG.png",
     "/assets/Fly (1).png",
     "/assets/Fly (2).png",
