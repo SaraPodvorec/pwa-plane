@@ -1,9 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { db } from '../services/firebase'
-import { collection, addDoc, getDocs, query, orderBy, limit } from 'firebase/firestore'
-
-const COLLECTION_NAME = 'highScores'
+import { addScore, getScores } from '../services/indexedDB'
 
 export const useGameStore = defineStore('game', () => {
   const currentTime = ref(0)
@@ -15,16 +12,7 @@ export const useGameStore = defineStore('game', () => {
 
   const loadHighScores = async () => {
     try {
-      const q = query(
-        collection(db, COLLECTION_NAME),
-        orderBy('time', 'desc'),
-        limit(10)
-      )
-      const querySnapshot = await getDocs(q)
-      const allScores = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }))
+      const allScores = await getScores()
       
       const uniqueScores = []
       const seenTimes = new Set()
@@ -36,7 +24,7 @@ export const useGameStore = defineStore('game', () => {
         }
       }
       
-      highScores.value = uniqueScores
+      highScores.value = uniqueScores.slice(0, 10)
     } catch (error) {
     }
   }
@@ -48,9 +36,9 @@ export const useGameStore = defineStore('game', () => {
         time,
         date: new Date().toISOString()
       }
-      const docRef = await addDoc(collection(db, COLLECTION_NAME), score)
+      const savedScore = await addScore(score)
       await loadHighScores()
-      return { id: docRef.id, ...score }
+      return savedScore
     } catch (error) {
     }
   }
@@ -58,11 +46,7 @@ export const useGameStore = defineStore('game', () => {
   
   const getAllScores = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, COLLECTION_NAME))
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }))
+      return await getScores()
     } catch (error) {
       return []
     }

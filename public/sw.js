@@ -86,8 +86,7 @@ self.addEventListener('sync', (event) => {
 
 const syncHighScores = async () => {
   try {
-
-    const scores = await getAllScoresFromFirestore()
+    const scores = await getAllScoresFromIndexedDB()
     if (scores.length === 0) {
       return
     }
@@ -116,7 +115,7 @@ const syncHighScores = async () => {
       })
     } else {
       await self.registration.showNotification('Plane Game - Scores Synced', {
-        body: 'Your high scores have been synced with the server.',
+        body: 'Your high scores have been updated.',
         icon: '/assets/Fly (1).png',
         badge: '/assets/Fly (1).png',
         tag: 'sync-notification',
@@ -129,31 +128,32 @@ const syncHighScores = async () => {
   }
 }
 
-const getAllScoresFromFirestore = async () => {
+const getAllScoresFromIndexedDB = async () => {
   try {
-    const projectId = 'pwa-plane'
-    const collectionName = 'highScores'
-    const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/${collectionName}`
-    
-    const response = await fetch(url)
-    
-    if (!response.ok) {
-      throw new Error(`Failed to fetch scores from Firestore: ${response.status}`)
-    }
-    
-    const data = await response.json()
-    
-    if (!data.documents) {
-      return []
-    }
-    
-    const scores = data.documents.map(doc => ({
-      id: doc.name.split('/').pop(),
-      time: doc.fields.time?.integerValue ? parseInt(doc.fields.time.integerValue) : 0,
-      date: doc.fields.date?.stringValue || ''
-    })).sort((a, b) => b.time - a.time)
-    
-    return scores
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open('pwa-plane-db', 1)
+      
+      request.onerror = () => resolve([])
+      
+      request.onsuccess = (event) => {
+        const db = event.target.result
+        if (!db.objectStoreNames.contains('highScores')) {
+          resolve([])
+          return
+        }
+        
+        const transaction = db.transaction(['highScores'], 'readonly')
+        const objectStore = transaction.objectStore('highScores')
+        const getAllRequest = objectStore.getAll()
+        
+        getAllRequest.onsuccess = () => {
+          const scores = getAllRequest.result.sort((a, b) => b.time - a.time)
+          resolve(scores)
+        }
+        
+        getAllRequest.onerror = () => resolve([])
+      }
+    })
   } catch (error) {
     return []
   }
