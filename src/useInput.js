@@ -16,19 +16,24 @@ export const useAudioInput = () => {
       isMicrophoneSupported.value = !!(
         navigator.mediaDevices && navigator.mediaDevices.getUserMedia
       )
+      console.log('initMicrophone: isMicrophoneSupported:', isMicrophoneSupported.value)
 
       if (!isMicrophoneSupported.value) {
+        console.log('Microphone not supported')
         return false
       }
 
       if (isListening.value && audioContext.value) {
+        console.log('Already listening, resuming audio context')
         if (audioContext.value.state === 'suspended') {
           await audioContext.value.resume()
         }
         return true
       }
 
+      console.log('Requesting microphone access...')
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      console.log('Microphone access granted')
       audioContext.value = new (window.AudioContext || window.webkitAudioContext)()
       if (audioContext.value.state === 'suspended') {
         await audioContext.value.resume()
@@ -41,9 +46,11 @@ export const useAudioInput = () => {
       dataArray.value = new Uint8Array(analyser.value.frequencyBinCount)
 
       isListening.value = true
+      console.log('Audio listening started')
       detectVoice()
       return true
     } catch (error) {
+      console.log('Microphone error:', error)
       isMicrophoneSupported.value = false
       return false
     }
@@ -90,8 +97,11 @@ export const useAudioInput = () => {
     let isActive = false
     let pulseTimer = null
     const target = targetElement || document
+    
+    console.log('setupFallbackControls: target is', target === document ? 'document' : 'canvas')
 
     const setActive = (active) => {
+      console.log('setActive called with:', active)
       isActive = active
       isVoiceActive.value = active
       audioLevel.value = active ? 100 : 0
@@ -99,6 +109,7 @@ export const useAudioInput = () => {
     }
 
     const triggerPulse = () => {
+      console.log('triggerPulse called')
       if (pulseTimer) {
         clearTimeout(pulseTimer)
       }
@@ -110,6 +121,7 @@ export const useAudioInput = () => {
     }
 
     const onMouseDown = () => {
+      console.log('onMouseDown fired')
       if (options.mode === 'tap') {
         triggerPulse()
         return
@@ -118,11 +130,13 @@ export const useAudioInput = () => {
     }
 
     const onMouseUp = () => {
+      console.log('onMouseUp fired')
       if (options.mode === 'tap') return
       setActive(false)
     }
 
     const onTouchStart = () => {
+      console.log('onTouchStart fired')
       if (options.mode === 'tap') {
         triggerPulse()
         return
@@ -131,6 +145,7 @@ export const useAudioInput = () => {
     }
 
     const onTouchEnd = () => {
+      console.log('onTouchEnd fired')
       if (options.mode === 'tap') return
       setActive(false)
     }

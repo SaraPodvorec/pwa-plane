@@ -170,7 +170,11 @@ const gameLoop = () => {
 
 
   voiceStrengthPercent.value = Math.round((audioInput.audioLevel.value / 255) * 100)
+  if (voiceStrengthPercent.value > 0 || audioInput.isVoiceActive.value) {
+    console.log('Voice detected - isVoiceActive:', audioInput.isVoiceActive.value, 'audioLevel:', audioInput.audioLevel.value)
+  }
   if (hasReceivedVoice.value && !audioInput.isVoiceActive.value) {
+    console.log('Voice ended, ending game')
     endGame()
     return
   }
@@ -301,10 +305,13 @@ const endGame = async () => {
 }
 
 const setupControls = () => {
+  console.log('setupControls called, isMicrophoneSupported:', audioInput.isMicrophoneSupported.value)
   if (!audioInput.isMicrophoneSupported.value) {
+    console.log('Setting up fallback controls (no microphone)')
     const fallbackCleanup = audioInput.setupFallbackControls(
       { mode: 'tap', pulseMs: 160 },
       (isActive) => {
+        console.log('Fallback control triggered, isActive:', isActive)
         inputMode.value = 'click'
       },
       canvas.value
@@ -312,6 +319,7 @@ const setupControls = () => {
     return fallbackCleanup
   }
   
+  console.log('Microphone supported, NOT setting up fallback controls')
   return () => {}
 }
 
